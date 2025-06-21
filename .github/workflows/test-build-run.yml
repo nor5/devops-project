@@ -24,7 +24,7 @@ jobs:
         run: |
           IMAGE_BACKEND_TAG=test-${GITHUB_SHA::7}
           echo "IMAGE_BACKEND_TAG=$IMAGE_BACKEND_TAG" >> $GITHUB_ENV
-          sudo docker build -t $IMAGE_BACKEND:$IMAGE_BACKEND_TAG .
+          sudo docker build -t $IMAGE_BACKEND:$IMAGE_BACKEND_TAG ./backend
           sudo docker push $IMAGE_BACKEND:$IMAGE_BACKEND_TAG
       
       - name: Build and push Docker image frontend
@@ -32,7 +32,7 @@ jobs:
         run: |
           IMAGE_FRONTEND_TAG=test-${GITHUB_SHA::7}
           echo "IMAGE_FRONTEND_TAG=$IMAGE_FRONTEND_TAG" >> $GITHUB_ENV
-          sudo docker build -t $IMAGE_FRONTEND:$IMAGE_FRONTEND_TAG .
+          sudo docker build -t $IMAGE_FRONTEND:$IMAGE_FRONTEND_TAG ./frontend
           sudo docker push $IMAGE_FRONTEND:$IMAGE_FRONTEND_TAG
 
   deploy-test:
