@@ -1,0 +1,46 @@
+name:  SonarQube analyses
+
+on:
+  push:
+    branches:
+      - dev
+      - test
+  pull_request:
+    branches:
+      - test
+
+jobs:
+
+  build:
+    name: Build and analyze
+    runs-on: self-hosted
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
+
+      - name: Official SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
+        env:
+          #GITHUB_TOKEN: ${{ secrets.TOKEN_USER}}  # Needed to get PR information
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # Generate a token on SonarQube, add it to the secrets of this repo with the name SONAR_TOKEN (Settings > Secrets > Actions > add new repository secret)
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} # add the URL of your instance to the secrets of this repo with the name SONAR_HOST_URL (Settings > Secrets > Actions > add new repository secret)
+        with:
+          # Additional arguments for the sonarcloud scanner
+          args:
+            # Unique key of your project. You can find it in SonarQube > [my project] > Project Information (top-right menu)
+            # mandatory
+            -Dsonar.projectKey=${{ secrets.PROJECT_KEY }}
+      #   If you wish to fail your job when the Quality Gate is red, uncomment the
+      # following lines. This would typically be used to fail a deployment.
+      - name: fail the job when the Quality Gate is red
+        uses: SonarSource/sonarqube-quality-gate-action@v1
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      
+      - name: Cleanup workspace
+        run: |
+          echo "Cleaning up workspace..."
+          rm -rf $GITHUB_WORKSPACE/*
