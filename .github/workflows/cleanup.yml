@@ -1,0 +1,23 @@
+name: Cleanup Runner Environment
+
+on:
+  schedule:
+    - cron: "0 3 * * *"   # Tous les jours à 3h du matin (UTC)
+
+jobs:
+  cleanup:
+    runs-on: self-hosted
+
+    steps:
+      - name: Cleanup repo directory
+        run: |
+          echo "Suppression du repo cloné..."
+          rm -rf ${{ github.workspace }}
+      
+      - name: Cleanup containers
+        run: |
+          sudo docker container stop $(sudo docker container ls -aq) || true
+          sudo docker container rm -f $(sudo docker container ls -aq) || true
+          sudo docker image prune -af
+          sudo docker volume prune -f
+      
