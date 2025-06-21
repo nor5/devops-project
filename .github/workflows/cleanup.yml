@@ -2,7 +2,7 @@ name: Cleanup Runner Environment
 
 on:
   schedule:
-    - cron: "0 3 * * *"   # Tous les jours à 3h du matin (UTC)
+    - cron: "0 3 * * *"   
 
 jobs:
   cleanup:

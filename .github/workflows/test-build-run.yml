@@ -20,7 +20,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push Docker image backend
-        id: docker_build
+        id: docker_backend_build
         run: |
           IMAGE_BACKEND_TAG=test-${GITHUB_SHA::7}
           echo "IMAGE_BACKEND_TAG=$IMAGE_BACKEND_TAG" >> $GITHUB_ENV
@@ -28,7 +28,7 @@ jobs:
           sudo docker push $IMAGE_BACKEND:$IMAGE_BACKEND_TAG
       
       - name: Build and push Docker image frontend
-        id: docker_build
+        id: docker_frontend_build
         run: |
           IMAGE_FRONTEND_TAG=test-${GITHUB_SHA::7}
           echo "IMAGE_FRONTEND_TAG=$IMAGE_FRONTEND_TAG" >> $GITHUB_ENV
