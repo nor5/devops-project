@@ -1,4 +1,4 @@
-name: CI/CD - Build & Deploy on Self-hosted Server
+name: CI/CD Build & Deploy on Self-hosted Server
 
 on:
   push:
