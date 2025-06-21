@@ -2,7 +2,7 @@
 
 services:
   frontend:
-    image: nor5/frontend-test
+    image: docker.io/nor5/frontend-test
       
     container_name: frontend_container
     restart: always
@@ -16,7 +16,7 @@ services:
       - backend
 
   backend:
-    image: nor5/backend-test
+    image: docker.io/nor5/backend-test
       
     container_name: backend_container
     restart: always

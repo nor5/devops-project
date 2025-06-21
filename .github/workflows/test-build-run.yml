@@ -8,8 +8,8 @@ jobs:
   build-push:
     runs-on: self-hosted
     env:
-      IMAGE_BACKEND: nor5/backend
-      IMAGE_FRONTEND: nor5/frontend
+      IMAGE_BACKEND: docker.io/nor5/backend
+      IMAGE_FRONTEND: docker.io/nor5/frontend
     steps:
       - uses: actions/checkout@v3
 
