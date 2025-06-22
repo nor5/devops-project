@@ -1,5 +1,5 @@
 # Étape 1 : Construction du frontend
-FROM node:23-alpine 
+FROM node:23-alpine AS build
 
 # Définir le répertoire de travail
 WORKDIR /app
