@@ -10,6 +10,9 @@ jobs:
     env:
       IMAGE_BACKEND: nor5/backend
       IMAGE_FRONTEND: nor5/frontend
+    outputs:
+      frontend_tag: ${{ steps.set_outputs.outputs.frontend_tag }}
+      backend_tag: ${{ steps.set_outputs.outputs.backend_tag }}
     steps:
       - uses: actions/checkout@v3
 
@@ -36,23 +39,33 @@ jobs:
           sudo docker build -t $IMAGE_BACKEND:$IMAGE_BACKEND_TAG ./backend
           sudo docker push $IMAGE_BACKEND:$IMAGE_BACKEND_TAG
       
+      - name: Set output tags
+        id: set_outputs
+        run: |
+          echo "::set-output name=frontend_tag::${IMAGE_FRONTEND_TAG}"
+          echo "::set-output name=backend_tag::${IMAGE_BACKEND_TAG}"
+      
      
   deploy-test:
     runs-on: self-hosted
     needs: build-push
     if: github.ref == 'refs/heads/test'
+    env:
+      IMAGE_FRONTEND_TAG: ${{ needs.build-push.outputs.frontend_tag }}
+      IMAGE_BACKEND_TAG: ${{ needs.build-push.outputs.backend_tag }}
     steps:
 
 
       - name: Change backend name image in the compose file
         run: |
 
-          sed -i "s|image: nor5/backend.*|image: $IMAGE_BACKEND:$IMAGE_BACKEND_TAG|" compose.test.yml
+          sed -i "s|image: nor5/backend.*|image: nor5/backend:$IMAGE_BACKEND_TAG|" compose.test.yml
 
       - name: Change frontend name image in the compose file
   
         run: |
-          sed -i "s|image: nor5/frontend.*|image: $IMAGE_FRONTEND:$IMAGE_FRONTEND_TAG|" compose.test.yml
+          
+          sed -i "s|image: nor5/frontend.*|image: nor5/frontend:$IMAGE_FRONTEND_TAG|" compose.test.yml
 
       
       - name: Create .env file
