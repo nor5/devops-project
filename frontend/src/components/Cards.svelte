@@ -21,7 +21,7 @@
   // Fonction pour obtenir les données de l'API
   async function getCardData() {
     try {
-      const response = await fetch(`http://localhost:8000/api/recettes/`);
+      const response = await fetch(`https://api.poxmoxtest.com/api/recettes`);
       if (response.ok) {
         recettes = await response.json();
         console.log("test", recettes);
@@ -40,7 +40,7 @@
   // Fonction pour obtenir les détails d'une recette spécifique
   async function getRecetteDetails(id) {
     try {
-      const response = await fetch(`http://localhost:8000/api/recettes/${id}`);
+      const response = await fetch(`https://api.poxmoxtest.com/api/recettes${id}`);
 
       if (response.ok) {
         selectedRecette = await response.json(); // Stocke les détails de la recette

@@ -74,6 +74,9 @@ jobs:
           DB_CONNECTION=${{ secrets.DB_CONNECTION_TEST }}
           DB_HOST=${{ secrets.DB_CONNECTION_TEST }}
           DB_PORT=${{ secrets.DB_PORT_TEST }}
+          DB_DATABASE=${{ secrets.MYSQL_DATABASE_TEST }}
+          DB_USERNAME=${{ secrets.MYSQL_USER_TEST }}
+          DB_PASSWORD=${{ secrets.MYSQL_PASSWORD_TEST }}
           MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE_TEST }}
           MYSQL_USER=${{ secrets.MYSQL_USER_TEST }}
           MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD_TEST }}
