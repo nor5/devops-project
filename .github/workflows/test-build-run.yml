@@ -56,6 +56,18 @@ jobs:
         env:
           IMAGE_FRONTEND: ${{ env.IMAGE_FRONTEND }}
           IMAGE_FRONTEND_TAG: ${{ env.IMAGE_FRONTEND_TAG}}
+      
+      - name: Create .env file
+        run: |
+          cat > .env <<EOF
+          DB_CONNECTION=${{ secret.DB_CONNECTION_TEST }}
+          DB_HOST=${{ secret.DB_CONNECTION_TEST }}
+          DB_PORT=${{ secret.DB_PORT_TEST }}
+          MYSQL_DATABASE=${{ secret.MYSQL_DATABASE_TEST }}
+          MYSQL_USER=${{ secret.MYSQL_USER_TEST }}
+          MYSQL_PASSWORD=${{ secret.MYSQL_PASSWORD_TEST }}
+          MYSQL_ROOT_PASSWORD=${{ secret.MYSQL_PASSWORD_TEST }}
+          EOF
 
         run: |
           sed -i "s|image:nor5/frontend .*|image: $IMAGE_FRONTEND:$IMAGE_FRONTEND_TAG|" compose.test.yml
