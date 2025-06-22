@@ -50,14 +50,14 @@ jobs:
           IMAGE_BACKEND_TAG: ${{ env.IMAGE_BACKEND_TAG }}
 
         run: |
-          sed -i "s|image:nor5/backend .*|image: $IMAGE_BACKEND:$IMAGE_BACKEND_TAG|" compose.test.yml
+          sed -i "s|image: nor5/backend .*|image: $IMAGE_BACKEND:$IMAGE_BACKEND_TAG|" compose.test.yml
 
       - name: Change frontend name image in the compose file
         env:
           IMAGE_FRONTEND: ${{ env.IMAGE_FRONTEND }}
           IMAGE_FRONTEND_TAG: ${{ env.IMAGE_FRONTEND_TAG}}
         run: |
-          sed -i "s|image:nor5/frontend .*|image: $IMAGE_FRONTEND:$IMAGE_FRONTEND_TAG|" compose.test.yml
+          sed -i "s|image: nor5/frontend .*|image: $IMAGE_FRONTEND:$IMAGE_FRONTEND_TAG|" compose.test.yml
       
       - name: Create .env file
         run: |
