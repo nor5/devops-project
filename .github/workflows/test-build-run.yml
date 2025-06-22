@@ -62,7 +62,7 @@ jobs:
       - name: Create .env file
         run: |
           cat > .env <<EOF
-          DB_CONNECTION=${{ secret.DB_CONNECTION_TEST }}
+          DB_CONNECTION=${{ secrets.DB_CONNECTION_TEST }}
           DB_HOST=${{ secrets.DB_CONNECTION_TEST }}
           DB_PORT=${{ secrets.DB_PORT_TEST }}
           MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE_TEST }}
