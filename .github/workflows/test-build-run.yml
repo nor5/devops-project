@@ -8,8 +8,8 @@ jobs:
   build-push:
     runs-on: self-hosted
     env:
-      IMAGE_BACKEND: docker.io/nor5/backend
-      IMAGE_FRONTEND: docker.io/nor5/frontend
+      IMAGE_BACKEND: nor5/backend
+      IMAGE_FRONTEND: nor5/frontend
     steps:
       - uses: actions/checkout@v3
 
@@ -18,14 +18,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and push Docker image backend
-        id: docker_backend_build
-        run: |
-          IMAGE_BACKEND_TAG=test-${GITHUB_SHA::7}
-          echo "IMAGE_BACKEND_TAG=$IMAGE_BACKEND_TAG" >> $GITHUB_ENV
-          sudo docker build -t docker.io/nor5/backend:$IMAGE_BACKEND_TAG ./backend
-          sudo docker push docker.io/nor5/backend:$IMAGE_BACKEND_TAG
       
       - name: Build and push Docker image frontend
         id: docker_frontend_build
@@ -35,6 +27,16 @@ jobs:
           sudo docker build -t $IMAGE_FRONTEND:$IMAGE_FRONTEND_TAG ./frontend
           sudo docker push $IMAGE_FRONTEND:$IMAGE_FRONTEND_TAG
 
+
+      - name: Build and push Docker image backend
+        id: docker_backend_build
+        run: |
+          IMAGE_BACKEND_TAG=test-${GITHUB_SHA::7}
+          echo "IMAGE_BACKEND_TAG=$IMAGE_BACKEND_TAG" >> $GITHUB_ENV
+          sudo docker build -t $IMAGE_BACKEND:$IMAGE_BACKEND_TAG ./backend
+          sudo docker push $IMAGE_BACKEND:$IMAGE_BACKEND_TAG
+      
+     
   deploy-test:
     runs-on: self-hosted
     needs: build-push
