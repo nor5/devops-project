@@ -29,3 +29,4 @@ EXPOSE 8000
 
 # Start PHP-FPM
 CMD ["php-fpm"]
+

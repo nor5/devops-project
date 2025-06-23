@@ -8,7 +8,7 @@
   // Fonction pour obtenir les données de l'API
   async function getCardData() {
     try {
-      const response = await fetch(`https://api.poxmoxtest.com/api/recettes`);
+      const response = await fetch(`http://prod-traefik-ofour.duckdns.org/api/recettes/`);
 
     if (response.ok) {
   recettes = await response.json();

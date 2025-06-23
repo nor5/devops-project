@@ -1,0 +1,88 @@
+
+
+services:
+  traefik:
+    image: traefik:latest
+    command:
+      - "--providers.docker.swarmMode=true"
+      - "--providers.docker.exposedByDefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--api.dashboard=true"
+      - "--accesslog=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge=true"
+      - "--certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.myresolver.acme.email=noorbelkacem5@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "letsencrypt:/letsencrypt"
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+    networks:
+      - web
+
+  frontend:
+    image: nor5/frontend:prod1
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`ofour-app.ddns.net`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+    environment:
+      - VITE_API_URL=value
+    deploy:
+      replicas: 3
+      update_config:
+        parallelism: 2
+        delay: 10s
+    depends_on:
+      - traefik
+    networks:
+      - web
+
+  backend:
+    image: nor5/backend:prod1
+    env_file:
+      - path: ./.env
+   
+    environment:
+      - DB_CONNECTION=${DB_CONNECTION}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_DATABASE=${MYSQL_DATABASE}
+      - DB_USERNAME=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+    
+    command:  php artisan serve --host=0.0.0.0 --port=8000
+    
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    labels:
+      - "traefik.enable=false"
+    depends_on:
+      - traefik
+    networks:
+      - internal
+
+volumes:
+  letsencrypt:
+
+networks:
+  web:
+    external: true
+  internal:
+    driver: overlay
+  
