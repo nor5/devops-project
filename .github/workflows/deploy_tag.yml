@@ -19,9 +19,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
-      - name: check user
-        run: whoami
+
 
       - name: Set Docker tag from Git tag
         run: echo "IMAGE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
