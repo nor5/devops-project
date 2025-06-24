@@ -1,5 +1,6 @@
 <script>
   import Modal from "./Modal.svelte";
+  const API_BASE = import.meta.env.VITE_API_URL;
 
   let recettes = [];
   let selectedRecette = null; // Variable pour stocker la recette sélectionnée
@@ -21,7 +22,7 @@
   // Fonction pour obtenir les données de l'API
   async function getCardData() {
     try {
-      const response = await fetch(`http://prod-traefik-ofour.duckdns.org/api/recettes/`);
+      const response = await fetch(`${API_BASE}/recettes/`);
       if (response.ok) {
         recettes = await response.json();
         console.log("test", recettes);
@@ -40,7 +41,7 @@
   // Fonction pour obtenir les détails d'une recette spécifique
   async function getRecetteDetails(id) {
     try {
-      const response = await fetch(`http://prod-traefik-ofour.duckdns.org/api/recettes/${id}`);
+      const response = await fetch(`${API_BASE}/recettes/${id}`);
 
       if (response.ok) {
         selectedRecette = await response.json(); // Stocke les détails de la recette

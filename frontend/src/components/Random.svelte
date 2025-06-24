@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  const API_BASE = import.meta.env.VITE_API_URL;
 
   export let recettes = [];
 
@@ -8,7 +9,7 @@
   // Fonction pour obtenir les données de l'API
   async function getCardData() {
     try {
-      const response = await fetch(`http://prod-traefik-ofour.duckdns.org/api/recettes/`);
+      const response = await fetch(`${API_BASE}/recettes/`);
 
     if (response.ok) {
   recettes = await response.json();

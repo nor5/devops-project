@@ -1,7 +1,7 @@
 <script>
   import Modal from "../components/Modal.svelte";
   import { onMount } from "svelte";
-  
+  const API_BASE = import.meta.env.VITE_API_URL;
   let recettes = [];
   let searchQuery = "";
   let selectedRecette = null;
@@ -12,7 +12,7 @@
   // Récupérer toutes les recettes
   async function getAllRecettes() {
     try {
-      const response = await fetch(`http://prod-traefik-ofour.duckdns.org/api/recettes/`);
+      const response = await fetch(`${API_BASE}/recettes/`);
       if (response.ok) {
         recettes = await response.json();
       } else {
@@ -55,7 +55,7 @@
   // Récupérer les détails d'une recette
   async function getRecetteDetails(id) {
     try {
-      const response = await fetch(`http://prod-traefik-ofour.duckdns.org/api/recettes/${id}`);
+      const response = await fetch(`${API_BASE}/recettes/${id}`);
       if (response.ok) {
         selectedRecette = await response.json();
         openModal();
