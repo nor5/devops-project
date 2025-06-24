@@ -43,17 +43,9 @@ jobs:
           sudo docker build -t $IMAGE_NAME_FRONTEND:latest -t $IMAGE_NAME_FRONTEND:${IMAGE_TAG} ./frontend
           sudo docker push $IMAGE_NAME_FRONTEND:latest
           sudo docker push $IMAGE_NAME_FRONTEND:${IMAGE_TAG}
-      
-      - name:  Update Docker services on preprod server
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.PREPROD_HOST }}
-          username: ${{ secrets.PREPROD_USER }}
-          key: ${{ secrets.PREPROD_SSH_KEY }}
-          script: |
-            sudo docker service update --image $IMAGE_NAME_BACKEND:latest preprod_backend
-            sudo docker service update --image $IMAGE_NAME_FRONTEND:latest preprod_frontend
-      
+
+   
+
       - name: Déploiement préprod
         run: |
           ssh ${{ secrets.PREPROD_USER }}@${{ secrets.PREPROD_HOST }} <<EOF
