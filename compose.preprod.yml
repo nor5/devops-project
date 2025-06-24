@@ -5,6 +5,8 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./ssl_certif/:/etc/letsencrypt/live/preprod-ofour.poxmoxtest.com/
       - ./ssl_certif/:/etc/letsencrypt/live/preprod-api.poxmoxtest.com/
+      - ./ssl_certif/:/etc/nginx/ssl/
+
     ports:
       - "80:80"
       - "443:443"
