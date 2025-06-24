@@ -1,0 +1,52 @@
+name: Deploy to Preprod
+
+# on:
+#   push:
+#     branches:
+#       - prod
+
+jobs:
+  preprod:
+    runs-on: self-hosted
+    env:
+      IMAGE_TAG: latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set Docker tag from Git tag if exists
+        id: version
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "IMAGE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          fi
+
+      - name: Log in to Docker Registry
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push frontend
+        run: |
+          docker build -t nor5/frontend:${{ env.IMAGE_TAG }} -t nor5/frontend:latest  ./frontend
+          
+          docker push nor5/frontend:${{ env.IMAGE_TAG }}
+          docker push nor5/frontend:latest
+
+      - name: Build and push backend
+        run: |
+          docker build -t nor5/backend:${{ env.IMAGE_TAG }} -t nor5/backend:latest ./backend
+          
+          docker push nor5/backend:${{ env.IMAGE_TAG }}
+          docker push nor5/backend:latest
+
+      - name: Deploy on preprod
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PREPROD_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            docker service update --image nor5/frontend:latest preprod_frontend
+            docker service update --image nor5/backend:latest preprod_backend

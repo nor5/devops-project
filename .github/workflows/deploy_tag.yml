@@ -1,0 +1,62 @@
+name:  Deploy to Preprod on Tag
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  
+
+jobs:
+  deploy-preprod:
+    name:  Build & Deploy to Preprod
+    runs-on: self-hosted
+
+    env:
+      IMAGE_NAME_BACKEND: nor5/backend
+      IMAGE_NAME_FRONTEND: nor5/frontend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set Docker tag from Git tag
+        run: echo "IMAGE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build & push backend image
+        run: |
+          docker build -t $IMAGE_NAME_BACKEND:latest -t $IMAGE_NAME_BACKEND:${IMAGE_TAG} ./backend
+          docker push $IMAGE_NAME_BACKEND:latest
+          docker push $IMAGE_NAME_BACKEND:${IMAGE_TAG}
+
+      - name: Build & push frontend image
+        run: |
+          docker build -t $IMAGE_NAME_FRONTEND:latest -t $IMAGE_NAME_FRONTEND:${IMAGE_TAG} ./frontend
+          docker push $IMAGE_NAME_FRONTEND:latest
+          docker push $IMAGE_NAME_FRONTEND:${IMAGE_TAG}
+      
+      - name:  Update Docker services on preprod server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PREPROD_HOST }}
+          username: ${{ secrets.PREPROD_USER }}
+          key: ${{ secrets.PREPROD_SSH_KEY }}
+          script: |
+            sudo docker service update --image $IMAGE_NAME_BACKEND:latest preprod_backend
+            sudo docker service update --image $IMAGE_NAME_FRONTEND:latest preprod_frontend
+      
+      - name: Déploiement préprod
+        run: |
+          ssh ${{ secrets.PREPROD_USER }}@${{ secrets.PREPROD_HOST }} <<EOF
+            docker service update \
+              --image $IMAGE_NAME_BACKEND:latest \
+              preprod_frontend
+
+            docker service update \
+              --image $IMAGE_NAME_FRONTEND:latest \
+              preprod_backend
+          EOF
