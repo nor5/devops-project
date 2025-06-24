@@ -29,15 +29,15 @@ jobs:
 
       - name: Build & push backend image
         run: |
-          docker build -t $IMAGE_NAME_BACKEND:latest -t $IMAGE_NAME_BACKEND:${IMAGE_TAG} ./backend
-          docker push $IMAGE_NAME_BACKEND:latest
-          docker push $IMAGE_NAME_BACKEND:${IMAGE_TAG}
+          sudo docker build -t $IMAGE_NAME_BACKEND:latest -t $IMAGE_NAME_BACKEND:${IMAGE_TAG} ./backend
+          sudo docker push $IMAGE_NAME_BACKEND:latest
+          sudo docker push $IMAGE_NAME_BACKEND:${IMAGE_TAG}
 
       - name: Build & push frontend image
         run: |
-          docker build -t $IMAGE_NAME_FRONTEND:latest -t $IMAGE_NAME_FRONTEND:${IMAGE_TAG} ./frontend
-          docker push $IMAGE_NAME_FRONTEND:latest
-          docker push $IMAGE_NAME_FRONTEND:${IMAGE_TAG}
+          sudo docker build -t $IMAGE_NAME_FRONTEND:latest -t $IMAGE_NAME_FRONTEND:${IMAGE_TAG} ./frontend
+          sudo docker push $IMAGE_NAME_FRONTEND:latest
+          sudo docker push $IMAGE_NAME_FRONTEND:${IMAGE_TAG}
       
       - name:  Update Docker services on preprod server
         uses: appleboy/ssh-action@v1.0.3
@@ -52,11 +52,11 @@ jobs:
       - name: Déploiement préprod
         run: |
           ssh ${{ secrets.PREPROD_USER }}@${{ secrets.PREPROD_HOST }} <<EOF
-            docker service update \
+            sudo docker service update \
               --image $IMAGE_NAME_BACKEND:latest \
               preprod_frontend
 
-            docker service update \
+            sudo docker service update \
               --image $IMAGE_NAME_FRONTEND:latest \
               preprod_backend
           EOF
