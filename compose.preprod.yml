@@ -19,7 +19,7 @@ services:
       - web
 
   frontend:
-    image: nor5/frontend:preprod
+    image: nor5/frontend-preprod:latest
     networks:
       - web
     deploy:
@@ -32,7 +32,7 @@ services:
 
 
   backend:
-    image: nor5/backend:preprod
+    image: nor5/backend-preprod:latest
     volumes:
       - /var/.env:/app/.env
     command: >

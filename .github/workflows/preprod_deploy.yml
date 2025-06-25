@@ -29,17 +29,17 @@ jobs:
 
       - name: Build and push frontend
         run: |
-          sudo docker build -t nor5/frontend:${{ env.IMAGE_TAG }} -t nor5/frontend:latest  ./frontend
+          sudo docker build -t nor5/frontend-preprod:${{ env.IMAGE_TAG }} -t nor5/frontend-preprod:latest  ./frontend
           
-          sudo docker push nor5/frontend:${{ env.IMAGE_TAG }}
-          sudo docker push nor5/frontend:latest
+          sudo docker push nor5/frontend-preprod:${{ env.IMAGE_TAG }}
+          sudo docker push nor5/frontend-preprod:latest
 
       - name: Build and push backend
         run: |
-          sudo docker build -t nor5/backend:${{ env.IMAGE_TAG }} -t nor5/backend:latest ./backend
+          sudo docker build -t nor5/backend-preprod:${{ env.IMAGE_TAG }} -t nor5/backend-preprod:latest ./backend
           
-          sudo docker push nor5/backend:${{ env.IMAGE_TAG }}
-          sudo docker push nor5/backend:latest
+          sudo docker push nor5/backend-preprod:${{ env.IMAGE_TAG }}
+          sudo docker push nor5/backend-preprod:latest
 
       - name: Deploy on preprod
         uses: appleboy/ssh-action@v1.0.3
@@ -48,5 +48,5 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo docker service update --image nor5/frontend:latest preprod_frontend
-            sudo docker service update --image nor5/backend:latest preprod_backend
+            sudo docker service update --image nor5/frontend-preprod:latest preprod_frontend
+            sudo docker service update --image nor5/backend-preprod:latest preprod_backend
