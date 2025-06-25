@@ -49,9 +49,9 @@ jobs:
           ssh ${{ secrets.PREPROD_USER }}@${{ secrets.PREPROD_HOST }} <<EOF
             sudo docker service update \
               --image $IMAGE_NAME_BACKEND:latest \
-              preprod_frontend
+              preprod_backend
 
             sudo docker service update \
               --image $IMAGE_NAME_FRONTEND:latest \
-              preprod_backend
+              preprod_frontend
           EOF
