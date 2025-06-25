@@ -23,7 +23,7 @@ jobs:
       - name: Get latest tag
         id: get_tag
         run: |
-          git fetch --tags
+          git fetch --tags --force
           TAG=$(git describe --tags --abbrev=0)
           echo "IMAGE_TAG=$TAG" >> $GITHUB_ENV
 
