@@ -3,7 +3,7 @@ name:  Deploy to Preprod on Tag
 on:
   push:
     branches:
-      - preprod
+      - prod
     tags:
       - 'v*.*.*'  
 
@@ -13,8 +13,8 @@ jobs:
     runs-on: self-hosted
 
     env:
-      IMAGE_NAME_BACKEND: nor5/backend-preprod
-      IMAGE_NAME_FRONTEND: nor5/frontend-preprod
+      IMAGE_NAME_BACKEND: nor5/backend
+      IMAGE_NAME_FRONTEND: nor5/frontend
 
     steps:
       - name: Checkout code
@@ -43,13 +43,9 @@ jobs:
       - name: Create .env file for Vite
         working-directory: ./frontend
         run: |
-          echo "VITE_API_URL=${{ secrets.PREPROD_API }}" > .env
+          echo "VITE_API_URL=${{ secrets.PROD_API }}" > .env
 
-      - name: Build & push backend image
-        run: |
-          sudo docker build -t $IMAGE_NAME_BACKEND:latest -t $IMAGE_NAME_BACKEND:${IMAGE_TAG} ./backend
-          sudo docker push $IMAGE_NAME_BACKEND:latest
-          sudo docker push $IMAGE_NAME_BACKEND:${IMAGE_TAG}
+      
 
       - name: Build & push frontend image
         run: |
@@ -59,14 +55,14 @@ jobs:
 
    
 
-      - name: Déploiement préprod
+      - name: Deploy prod
         run: |
           ssh ${{ secrets.PREPROD_USER }}@${{ secrets.PREPROD_HOST }} <<EOF
             sudo docker service update \
               --image $IMAGE_NAME_BACKEND:latest \
-              preprod_backend
+              prod_backend
 
             sudo docker service update \
               --image $IMAGE_NAME_FRONTEND:latest \
-              preprod_frontend
+              prod_frontend
           EOF

@@ -3,10 +3,9 @@ services:
     image: nginx:alpine
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./ssl_certif/:/etc/letsencrypt/live/preprod-ofour.poxmoxtest.com/
-      - ./ssl_certif/:/etc/letsencrypt/live/preprod-api.poxmoxtest.com/
+      - /etc/letsencrypt/live/ofour-app.duckdns.org/:/etc/letsencrypt/live/ofour-app.duckdns.org/
+      - /etc/letsencrypt/live/api-app.duckdns.org/:/etc/letsencrypt/live/api-app.duckdns.org/
       - ./ssl_certif/:/etc/nginx/ssl/
-
     ports:
       - "80:80"
       - "443:443"
@@ -19,7 +18,7 @@ services:
       - web
 
   frontend:
-    image: nor5/frontend-preprod:latest
+    image: nor5/frontend:latest
     networks:
       - web
     deploy:
@@ -32,7 +31,7 @@ services:
 
 
   backend:
-    image: nor5/backend-preprod:latest
+    image: nor5/backend:latest
     volumes:
       - /var/.env:/app/.env
     command: >
@@ -53,3 +52,4 @@ services:
 networks:
   web:
     driver: overlay
+
