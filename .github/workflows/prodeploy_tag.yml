@@ -1,4 +1,4 @@
-name:  Deploy to Preprod on Tag
+name:  Deploy to prod on Tag
 
 on:
   push:
