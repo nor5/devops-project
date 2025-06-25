@@ -13,7 +13,7 @@ jobs:
     runs-on: self-hosted
 
     env:
-      IMAGE_NAME_BACKEND: nor5/backend-preprod
+      IMAGE_NAME_BACKEND: nor5/backend
       IMAGE_NAME_FRONTEND: nor5/frontend-preprod
 
     steps:
